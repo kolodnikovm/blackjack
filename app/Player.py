@@ -5,7 +5,8 @@ class Player:
 
     def hitMe(self, card):
         """ Request a card """
-        self.score += card
+        self.hand.append(""+card.suit+card.rank)
+        self.score += card.score
 
     def stand(self):
         """ No more cards needed """

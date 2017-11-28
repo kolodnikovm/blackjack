@@ -27,7 +27,8 @@ def checkWinner(u, c):
 print('\nGame started\n')
 
 while checkWinner(user, computer):
-    gameStatus(user, computer)
+    print("My score: {}".format(user.score))
+    print("My Cards:{}".format(user.hand))
     opt = input('Hit or Stand [h]/[s]')
     if opt == 'h':
         computer.hitMe(shoes.stock[0].cards.pop())
