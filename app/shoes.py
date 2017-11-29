@@ -1,11 +1,16 @@
 from .cards import Deck
-import random
+from itertools import chain
+from random import shuffle
 
 class Shoes:
     """ Collection of current decks """
     def __init__(self, decks):
-        self.stock = {n: Deck() for n in range(decks)}
+        self.stock = list(chain(*[Deck(n).cards for n in range(decks)]))
 
     def shuffleDeck(self):
-        for d in self.stock:
-            random.shuffle(self.stock[d].cards)
+        shuffle(self.stock)
+
+    def getCard(self):
+        return self.stock.pop()
+
+# make GetCard give cards batch on demand
