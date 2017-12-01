@@ -10,7 +10,8 @@ class Shoes:
     def shuffleDeck(self):
         shuffle(self.stock)
 
-    def getCard(self):
-        return self.stock.pop()
-
-# make GetCard give cards batch on demand
+    def getCard(self, n = 1):
+        cards = []
+        for i in range(n):
+            cards.append(self.stock.pop())
+        return cards
