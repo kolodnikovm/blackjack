@@ -20,7 +20,6 @@ class Card:
             self.score = 10
         else: self.score = 11
 
-
 class Deck:
     def __init__(self, n):
         self.cards = [Card(s,r,n) for s in SUITS for r in RANKS]
