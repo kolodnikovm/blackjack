@@ -6,6 +6,7 @@ class Shoes:
     """ Collection of current decks """
     def __init__(self, decks):
         self.stock = list(chain(*[Deck(n).cards for n in range(decks)]))
+        self.shuffleDeck()
 
     def shuffleDeck(self):
         shuffle(self.stock)

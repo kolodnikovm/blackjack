@@ -2,6 +2,7 @@ class Player:
     def __init__(self, init_cards):
         self.hand = [c.rank+"_"+c.suit for c in init_cards]
         self.score = sum([c.score for c in init_cards])
+        self.winner = 0
 
     def hitMe(self, card):
         """ Request a card """
