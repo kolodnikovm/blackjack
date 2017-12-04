@@ -5,7 +5,6 @@ class Player:
         self.winner = 0
 
     def hitMe(self, card):
-        """ Request a card """
         self.hand.append(card[0].rank+"_"+card[0].suit)
         if card[0].rank == "A" and self.score > 10:
             self.score += 1

@@ -26,15 +26,16 @@ class GameManager:
         return getattr(self.instance, name)
 
     def gameStatus(self,u,c):
-        status = "\nUser's score:{} || Computer's score: {}\nMy cards{}\nComps's{}"\
-                        .format(u.score, c.score, u.hand, c.hand)
         entrance = [u.hand, c.hand, u.winner, c.winner]
         writer = csv.writer(self.db)
         writer.writerow(entrance)
-        self.db.flush()
+        # self.db.flush()
         reader = csv.reader(self.db)
+        u.total, c.total = u.winner, c.winner
         for row in reader:
-            print(row)
+            u.total += int(row[2]); c.total += int(row[3])
+        status = "\nUser's score:{} || Computer's score: {}\nMy cards{}\nComps's{}\nTotal score: User: {}, Computer: {}"\
+                        .format(u.score, c.score, u.hand, c.hand, u.total, c.total)
         self.db.close()
         print(status)
 

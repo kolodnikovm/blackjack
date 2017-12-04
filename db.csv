@@ -1,3 +1,14 @@
-"['6_Spades', 'A_Clubs']","['Q_Diamonds', '2_Spades', 'J_Spades']",1,0
-7_Diamonds']",1,0
-"['K_Spades', '6_Diamonds']","['Q_Spades', 'J_Clubs']",0,1
+"['K_Hearts', '5_Hearts']","['J_Hearts', 'A_Hearts']",0,1
+"['J_Spades', '10_Clubs']","['2_Diamonds', 'Q_Clubs', '9_Hearts']",0,1
+"['J_Diamonds', 'K_Diamonds']","['J_Hearts', '7_Hearts']",1,0
+"['3_Spades', '8_Diamonds']","['6_Spades', 'K_Hearts', '3_Hearts']",0,1
+"['Q_Diamonds', 'Q_Spades', '7_Diamonds']","['Q_Hearts', '8_Diamonds']",0,1
+"['5_Hearts', '2_Diamonds']","['10_Diamonds', '7_Clubs']",0,1
+"['7_Hearts', '8_Hearts']","['5_Spades', '2_Diamonds', '7_Clubs', '5_Hearts']",0,1
+"['7_Diamonds', '10_Diamonds']","['Q_Clubs', '3_Clubs', '6_Hearts']",0,1
+"['5_Hearts', 'A_Spades']","['J_Spades', 'K_Diamonds']",0,1
+"['2_Diamonds', 'A_Spades']","['7_Clubs', '8_Diamonds', '3_Diamonds']",0,1
+"['K_Clubs', '6_Hearts']","['3_Clubs', '8_Diamonds', '8_Hearts']",0,1
+"['7_Clubs', '9_Spades', '3_Diamonds']","['5_Spades', '6_Clubs', 'A_Spades', '7_Diamonds']",0,0
+"['4_Spades', 'J_Spades']","['7_Diamonds', '2_Clubs', '6_Hearts', '7_Clubs']",1,0
+"['10_Clubs', '3_Hearts']","['Q_Hearts', '4_Spades', '8_Diamonds']",1,0
