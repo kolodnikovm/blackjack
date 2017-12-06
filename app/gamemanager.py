@@ -3,41 +3,24 @@ from .shoes import Shoes
 import csv
 
 class GameManager:
-    class __GameManager:
-        def __init__(self, decks = 1):
-            self.shoes = Shoes(decks)
-            self.user = User(self.shoes.getCard(2))
-            self.computer = Computer(self.shoes.getCard())
-            self.db = open("db.csv",'r+', newline='')
-        def __str__(self):
-            return repr(self)
-
-    instance = None
-
     def __init__(self, decks = 1):
-        if not GameManager.instance:
-            GameManager.instance = GameManager.__GameManager(decks)
-        else:
-            GameManager.instance.shoes = Shoes(decks)
-            GameManager.instance.user = User(self.shoes.getCard(2))
-            GameManager.instance.computer = Computer(self.shoes.getCard())
-
-    def __getattr__(self, name):
-        return getattr(self.instance, name)
+        self.shoes = Shoes(decks)
+        self.user = User(self.shoes.getCard(2))
+        self.computer = Computer(self.shoes.getCard())
+    def __str__(self):
+        return repr(self)
 
     def gameStatus(self,u,c):
-        entrance = [u.hand, c.hand, u.winner, c.winner]
-        writer = csv.writer(self.db)
-        writer.writerow(entrance)
-        # self.db.flush()
-        reader = csv.reader(self.db)
-        u.total, c.total = u.winner, c.winner
-        for row in reader:
-            u.total += int(row[2]); c.total += int(row[3])
-        status = "\nUser's score:{} || Computer's score: {}\nMy cards{}\nComps's{}\nTotal score: User: {}, Computer: {}"\
-                        .format(u.score, c.score, u.hand, c.hand, u.total, c.total)
-        self.db.close()
-        print(status)
+        with open('db.csv', 'r+', newline='') as db:
+            entrance = [u.hand, c.hand, u.winner, c.winner]
+            csv.writer(db).writerow(entrance)
+            u.total, c.total = u.winner, c.winner
+            for row in csv.reader(db):
+                u.total += int(row[2]); c.total += int(row[3])
+            status = ("\nUser's score:{} || Computer's score: {}\nMy cards{}" +
+                      "\nComps's{}\nTotal score: User: {}, Computer: {}") \
+                    .format(u.score, c.score, u.hand, c.hand, u.total, c.total)
+            print(status)
 
     def checkWinner(self, u, c):
         if u.stand:
@@ -80,5 +63,7 @@ class GameManager:
                 self.user.stand = True
                 while self.computer.score < 17:
                     self.computer.hitMe(self.shoes.getCard())
+            elif opt == 'e':
+                raise Exception
 
         self.gameStatus(self.user, self.computer)
