@@ -5,11 +5,11 @@ class Player:
         self.winner = 0
 
     def hitMe(self, card):
-        self.hand.append(card[0].rank+"_"+card[0].suit)
-        if card[0].rank == "A" and self.score > 10:
+        self.hand.append(card.rank+"_"+card.suit)
+        if card.rank == "A" and self.score > 10:
             self.score += 1
         else:
-            self.score += card[0].score
+            self.score += card.score
 
 class User(Player):
     def __init__(self, init_cards):
