@@ -17,7 +17,7 @@ class User(Player):
         Player.__init__(self, init_cards[:2])
         self.stand = False
 
-    def stand(self):
+    def no_more_cards(self):
         self.stand = True
 
 class Computer(Player):

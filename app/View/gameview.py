@@ -1,3 +1,5 @@
+""" Модуль view проги """
+
 class GameView():
 
     def __init__(self, controller, model):
@@ -14,6 +16,7 @@ class GameView():
         print("My cards:{}".format(self.model.user.hand), end='\n'+'-'*40+'\n')
 
     def game_status(self, u, c):
+        """ Принтует финальный статус игры """
         status = ("\nUser's score:{} || Computer's score: {}\nMy cards{}" +
                   "\nComps's{}\nTotal score: User: {}, Computer: {}") \
                   .format(u.score, c.score, u.hand, c.hand, u.total, c.total)
