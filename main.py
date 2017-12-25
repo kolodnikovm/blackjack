@@ -1,7 +1,6 @@
-from app import GameManager
+from app import create_app
 
-
-GM = GameManager()
+game_manager = create_app()
 
 if __name__ == '__main__':
-    GM.run_game()
+    game_manager.test_game()

@@ -1,6 +1,6 @@
 """ Модуль базы данных """
 import csv
-
+from .supfuncs import remove_empty_lines
 
 class DataBase:
     """ Класс предоставляет инструменты для работы с базой данных,
@@ -11,9 +11,9 @@ class DataBase:
 
 
     def save_data(self, data):
-        """ Сохраняет параметр data в файл self.db """
-
+        """ Сохраняет параметр data в файл self.db_file """
         csv.writer(self.db_file).writerow(data)
+        remove_empty_lines(self.db_file)
         # self.db_file.flush()
         # os.fsync(self.db_file)
 

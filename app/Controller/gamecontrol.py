@@ -36,7 +36,6 @@ class GameController:
                     self.model.user.winner, self.model.computer.winner]
         self.database.save_data(entrance)
         self.allocate_total_score()
-        print("___TOTAL___", self.model.user.total)
         self.database.db_file.close()
 
     def allocate_total_score(self):

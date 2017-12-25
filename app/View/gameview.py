@@ -42,4 +42,4 @@ class GameView():
 
         self.controller.game_over()
         self.game_status(*self.controller.get_players())
-        
+

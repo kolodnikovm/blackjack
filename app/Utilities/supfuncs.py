@@ -33,3 +33,12 @@ def reset_file(data):
     """ Очищает файл data """
     data.seek(0)
     data.truncate()
+    print('data cleared')
+
+def remove_empty_lines(file):
+    """ Костыль ?? """
+    lines = file.readlines()
+
+    lines = filter(lambda x: x.strip(), lines)
+    file.writelines(lines) 
+    
