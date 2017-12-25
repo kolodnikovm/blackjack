@@ -1,9 +1,5 @@
-class GameManager:
-    def __init__(self):
-        pass
+from .gamemanager import GameManager
 
-    def gameSetUp(self):
-        pass
-
-    def runGame(self):
-        pass
+def create_app():
+    game_manager = GameManager()
+    return game_manager
