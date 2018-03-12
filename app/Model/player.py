@@ -1,25 +1,49 @@
 class Player:
-    def __init__(self, init_cards):
-        self.hand = [c.rank+"_"+c.suit for c in init_cards]
-        self.score = sum([c.score for c in init_cards])
-        self.winner = 0
-        self.total = 0
+    def __init__(self, init_cards=None):
+        self.hand = init_cards
+        self.score = 0
+        if init_cards:
+            self.score = sum([card.score for card in init_cards])
+        self._winner = False
+        self._bet = 0
 
     def hit_me(self, card):
-        self.hand.append(card.rank+"_"+card.suit)
+        self.hand.append(card)
         if card.rank == "A" and self.score > 10:
             self.score += 1
         else:
             self.score += card.score
 
+    @property
+    def bet(self):
+        return self._bet
+
+    @bet.setter
+    def bet(self, value):
+        self._bet = value
+
+    @property
+    def winner(self):
+        return self._winner
+
+    @winner.setter
+    def winner(self, value):
+        self._winner = value
+
+
 class User(Player):
     def __init__(self, init_cards):
-        Player.__init__(self, init_cards[:2])
+        super().__init__(init_cards[:2])
         self.stand = False
 
     def no_more_cards(self):
         self.stand = True
 
+
 class Computer(Player):
     def __init__(self, init_cards):
-        Player.__init__(self,init_cards[:1])
+        super().__init__(init_cards[:1])
+
+
+if __name__ == '__main__':
+    pass

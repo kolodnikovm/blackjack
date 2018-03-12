@@ -8,10 +8,10 @@ RANKS = {
 
 class Card:
     """ Класс игральной карты """
-    def __init__(self, suit, rank, deck_nmb):
+    def __init__(self, suit, rank, deck_number):
         self.suit = suit
         self.rank = rank
-        self.deck_nmb = deck_nmb
+        self.deck_number = deck_number
         self.score = RANKS[rank]
 
     def __repr__(self):
@@ -19,9 +19,9 @@ class Card:
 
 class Deck:
     """ Класс колоды карт """
-    def __init__(self, n):
-        self.cards = [Card(s, r, n) for s in SUITS for r in RANKS]
-        self.deck_nmb = n
+    def __init__(self, number):
+        self.cards = [Card(suit, rank, number) for suit in SUITS for rank in RANKS]
+        self.deck_number = number
 
     def __repr__(self):
-        return 'Deck #{}'.format(self.deck_nmb)
+        return 'Deck #{}'.format(self.deck_number)

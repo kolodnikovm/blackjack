@@ -1,17 +1,16 @@
-""" Module Docstring """
 from ..Utilities.supfuncs import check_winner
 from ..Utilities.database import DataBase
 from ..View.gameview import GameView
 
 
 class GameController:
-    """ Контроллер вмодели MVC.  """
-
     def __init__(self, model, db_path):
         self.model = model
         self.view = GameView(self, self.model)
         self.checker = check_winner
         self.database = DataBase(db_path)
+
+        self.model.add_observer(self)
 
     def hit_all(self):
         """ Раздает по одной карте компьютеру и юзеру,
@@ -36,7 +35,7 @@ class GameController:
                     self.model.user.winner, self.model.computer.winner]
         self.database.save_data(entrance)
         self.allocate_total_score()
-        self.database.db_file.close()
+        self.database.close()
 
     def allocate_total_score(self):
         """ Считывает общую историю побед для каждого из игроков.

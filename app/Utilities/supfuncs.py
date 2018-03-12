@@ -1,44 +1,40 @@
 """ Модуль вспомогательных функций """
 
 
-def check_winner(u, c):
-    """ Функция проверки победителя. Принимает объекты экземпляров
-    с парамтером score. """
-    if u.stand:
-        if (c.score > u.score) and (c.score <= 21):
-            print('\nComputer wins')
-            c.winner = 1
-            return False
-        elif c.score == u.score:
-            print('\nDraw')
-            return False
-        print('\nUser wins')
-        u.winner = 1
+def check_winner(user, computer):
+    """ 
+    Функция проверки победителя. Принимает объекты экземпляров
+    с парамтером score. Возращает False, если игра должна продолжаться, 
+    True - определен результат, игра должна завершиться. 
+    При этом определяется победитель в свойстве соответствующего игрока.
+    """
+    if user.score < 21 and computer.score < 21:
+        if user.stand:
+            if user.score > computer.score:
+                print('\nUser wins')
+                user.winner = True
+            elif computer.score > user.score:
+                print('\nlogComputer wins')
+                computer.winner = True
+            else:
+                print('\nlogDraw')
+            return True
         return False
-    if u.score < 21 and c.score < 21:
+    elif (computer.score == 21 and user.score == 21) or (user.score > 21 and computer.score > 21):
+        print('\nlogDraw')
         return True
-    elif (c.score == 21 and u.score == 21) or (u.score > 21 and c.score > 21):
-        print('\nDraw')
-        return False
-    elif (c.score <= 21 and u.score > 21) or (c.score == 21 and u.score < 1):
-        print('\nComputer wins')
-        c.winner = 1
-        return False
-    elif (c.score > 21 and u.score <= 21) or (u.score == 21 and c.score < 21):
+    elif (computer.score <= 21 and user.score != 21):
+        print('\nlogComputer wins')
+        computer.winner = True
+        return True
+    elif (user.score <= 21 and computer.score != 21):
         print('\nUser wins')
-        u.winner = 1
-        return False
+        user.winner = True
+        return True
+
 
 def reset_file(data):
     """ Очищает файл data """
     data.seek(0)
     data.truncate()
-    print('data cleared')
-
-def remove_empty_lines(file):
-    """ Костыль ?? """
-    lines = file.readlines()
-
-    lines = filter(lambda x: x.strip(), lines)
-    file.writelines(lines) 
-    
+    print('logdata cleared')

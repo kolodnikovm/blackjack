@@ -2,12 +2,15 @@
 
 from itertools import chain
 from random import shuffle
-from .cards import Deck
+from cards import Deck
+
 
 class Shoes:
     """ Класс раздатчика карт, где хранятся все колоды """
+
     def __init__(self, decks, shfl=True):
-        self.stock = list(chain(*[Deck(n).cards for n in range(decks)]))
+        self.stock = list(
+            chain(*[Deck(number).cards for number in range(decks)]))
         if shfl:
             self.shuffle_deck()
 
@@ -15,8 +18,16 @@ class Shoes:
         """ Перетасовать карты в stock """
         shuffle(self.stock)
 
-    def get_card(self, n=1):
+    def get_card(self, number=1):
         """ Возращает карту из stock """
-        if n == 1:
-            return self.stock.pop()
-        return [self.stock.pop() for c in range(n)]
+        if self.stock:
+            if number == 1:
+                return self.stock.pop()
+            return [self.stock.pop() for card_number in range(number)]
+        return None
+
+
+if __name__ == '__main__':
+    test_shoe = Shoes(2)
+    print(test_shoe.get_card(), 'Ohne Zahl')
+    print(test_shoe.get_card(3), 'Mit Zahl')

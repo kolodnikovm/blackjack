@@ -25,3 +25,6 @@ class DataBase:
             total_score[0] += int(row[2])
             total_score[1] += int(row[3])
         return total_score
+
+    def close(self):
+        self.db_file.close()
