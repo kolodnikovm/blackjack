@@ -1,50 +1,47 @@
 class GameView():
 
-    def __init__(self, controller, model):
-        self.controller = controller
-        self.model = model
+    def __init__(self, controller):
+        self._controller = controller
+        self._actions = {'h': self._controller.give_cards,
+                         's': self._controller.user_stand,
+                         'e': self._controller.throw_exception}
 
-        # добавляет view компонент в слушатели model
-        self.model.add_observer(self)
-
-    def model_changed(self):
-        """ Отображает измененый набор карт и очков для игрока. """
-
-        print("My score: {}".format(self.model.user.score),
+    def model_changed(self, data):
+        print("My score: {user_score}".format(user_score=data['user'].score),
               end='\n' + '-' * 40 + '\n')
-        print("My cards:{}".format(self.model.user.hand),
+        print("My cards:{user_cards}".format(user_cards=data['user'].hand),
               end='\n' + '-' * 40 + '\n')
 
-    def game_status(self, user, computer):
-        """ Принтует финальный статус игры """
-        data = {
-            'u_score': user.score, 'c_score': computer.score,
-            'u_cards': user.hand, 'c_cards': computer.hand
-        }
-        status = ("\nUser's score:{u_score} || Computer's score: {c_score}" +
-                  "\nMy cards{u_cards}\nComps's cards: {c_cards}") \
-            .format(data)
-        print(status)
+    def show_start_game_message(self):
+        message = """
+        New game started
+        Controls:
+            h - get a card
+            s - no cards
+        """
+        print(message)
 
-    def show_game(self):
-        """ Выводит информацю о начале игры и запускает игровой цикл. """
+    def set_bet(self):
+        user_bet = input('Set your bet: ')
+        self._controller.set_bet(user_bet)
 
-        print('\nGame started\n')
+    def show_start_game_state(self):
+        start_state = """
+        My score: {user_score}
+        My cards: {user_cards}
+        """.format(user_score=self._controller._model._user.score, user_cards=self._controller._model._user.hand)
+        print(start_state)
 
-        # отобразить стартовое состояние игры
-        print("My score: {}".format(self.model.user.score),
-              end='\n' + '-' * 40 + '\n')
-        print("My cards:{}".format(self.model.user.hand),
-              end='\n' + '-' * 40 + '\n')
+    def game_cycle(self):
+        self.show_start_game_message()
+        self.set_bet()
+        self.show_start_game_state()
 
-        while self.controller.checker(*self.controller.get_players()):
-            opt = input('Hit or Stand [h]/[s] - ')
-            if opt == 'h':
-                self.controller.hit_all()
-            elif opt == 's':
-                self.controller.computer_fill()
-            elif opt == 'e':
-                raise Exception
+        while not self._controller._model._game_over:
+            action = input('Hit or Stand [h]/[s] - ')
+            try:
+                self._actions[action]()
+            except KeyError:
+                print('Invalid input')
 
-        self.controller.game_over()
-        self.game_status(*self.controller.get_players())
+        self.show_stats()

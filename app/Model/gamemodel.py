@@ -1,19 +1,16 @@
-""" Модуль модели игры """
-
-from .player import User, Computer
-from .shoes import Shoes
-from ..utilities.supfuncs import check_winner
+from app.model.player import User, Computer
+from app.model.shoes import Shoes
+from app.utilities.supfuncs import define_winner
 
 
 class GameModel:
-    """ Model в паттерне MVC """
-
     def __init__(self, decks=1):
-        self.__win_checker = check_winner
+        self._win_checker = define_winner
         self._shoes = Shoes(decks)
         self._user = User(self.shoes.get_card(2))
         self._computer = Computer(self.shoes.get_card())
         self._game_over = False
+        self._new_game = True
         self._observers = []
 
     @property
@@ -28,16 +25,42 @@ class GameModel:
     def shoes(self):
         return self._shoes
 
-    def is_game_over(self):
-        return self.__win_checker(self._user, self._computer)
+    def check_winner(self):
+        """
+        Определяет состояние игры.
+        Возращает кортеж из 2 элементов:
+            - 1 элемент: True - победитель определен, False - игра продолжается
+            - 2 элемент: словарь вида 'игрок':1(0) - победа(поражение)
+        """
+        self._game_over, winners = self._win_checker(
+            self._user.score, self._computer.score, stand=self._user.stand)
+        if self._game_over:
+            self._user.winner, self._computer.winner = list(winners.values())
+            print(list(winners.values()))
+        return not self._game_over
 
-    def give_card_to_user(self):
+    def _give_card_to_user(self):
         """ Добавляет в набор карт юзера одну карту из общей колоды. """
         self._user.hit_me(self._shoes.get_card())
 
-    def give_card_to_comp(self):
+    def _give_card_to_comp(self):
         """ Добавляет в набор кард компа одну карту из общей колоды. """
         self._computer.hit_me(self._shoes.get_card())
+
+    def hit_all(self):
+        """ Раздает по одной карте компьютеру и юзеру,
+        затем оповещает модель об изменении данных. """
+        self._give_card_to_comp()
+        self._give_card_to_user()
+        self.notify()
+
+    def computer_fill(self):
+        """ Если пользователь решил не брать карту, то комп добирает карты
+        пока не  наберем минимум 17 очков. Затем оповещает модель об изменении."""
+        self._user.no_more_cards()
+        while self._computer.score <= 17:
+            self._give_card_to_comp()
+        self.notify()
 
     def add_observer(self, observer):
         """ Добавляет слушателя """

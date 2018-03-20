@@ -18,13 +18,13 @@ class Player:
     def bet(self):
         return self._bet
 
-    @bet.setter
-    def bet(self, value):
-        self._bet = value
-
     @property
     def winner(self):
         return self._winner
+
+    @bet.setter
+    def bet(self, value):
+        self._bet = value
 
     @winner.setter
     def winner(self, value):
@@ -42,8 +42,5 @@ class User(Player):
 
 class Computer(Player):
     def __init__(self, init_cards):
-        super().__init__(init_cards[:1])
+        super().__init__([init_cards])
 
-
-if __name__ == '__main__':
-    pass

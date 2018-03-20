@@ -1,51 +1,44 @@
-from ..Utilities.supfuncs import check_winner
-from ..Utilities.database import DataBase
-from ..View.gameview import GameView
+from app.view.gameview import GameView
 
 
 class GameController:
-    def __init__(self, model, db_path):
-        self.model = model
-        self.view = GameView(self, self.model)
-        self.checker = check_winner
-        self.database = DataBase(db_path)
+    def __init__(self, model):
+        self._model = model
+        self._view = GameView(self)
+        self._observers = []
 
-        self.model.add_observer(self)
+        # Add observers to model and controller
+        self._model.add_observer(self)
+        self.add_observer(self._view)
 
-    def hit_all(self):
-        """ Раздает по одной карте компьютеру и юзеру,
-        затем оповещает модель об изменении данных. """
-        self.model.give_card_to_comp()
-        self.model.give_card_to_user()
-        self.model.notify()
+    def give_cards(self):
+        self._model.hit_all()
 
-    def computer_fill(self):
-        """ Если пользователь решил не брать карту, то комп добирает карты
-        пока не  наберем минимум 17 очков. Затем оповещает модель об изменении."""
-        self.model.user.no_more_cards()
-        while self.model.computer.score <= 17:
-            self.model.give_card_to_comp()
-        self.model.notify()
+    def user_stand(self):
+        self._model.computer_fill()
 
-    def game_over(self):
-        """ Вызывается при окончании игры. Выбранные данные в переменной entrance передаются в метод
-        БД save_data(data) для сохранения data в БД.
-        Затем происходит закрытие дескриптора на файл БД. """
-        entrance = [self.model.user.hand, self.model.computer.hand,
-                    self.model.user.winner, self.model.computer.winner]
-        self.database.save_data(entrance)
-        self.allocate_total_score()
-        self.database.close()
+    def throw_exception(self):
+        raise Exception
 
-    def allocate_total_score(self):
-        """ Считывает общую историю побед для каждого из игроков.
-        Записывает результат в параметры total каждого из объектов. """
-        self.model.user.total = self.model.user.winner
-        self.model.computer.total = self.model.computer.winner
-        totals = self.database.read_total_score()
-        self.model.user.total += totals[0]
-        self.model.computer.total += totals[1]
+    def check_winner(self):
+        self._model.check_winner()
 
-    def get_players(self):
-        """ Возращает обекты юзера и компа """
-        return self.model.user, self.model.computer
+    def set_bet(self, bet):
+        self._model.user.bet = bet
+
+    def retrieve_model_data(self):
+        data = {'user': self._model.user, 'computer': self._model.computer}
+        self.notify(data)
+
+    def model_changed(self):
+        self.retrieve_model_data()
+
+    def add_observer(self, observer):
+        self._observers.append(observer)
+
+    def remove_observer(self, observer):
+        self._observers.remove(observer)
+
+    def notify(self, data):
+        for observer in self._observers:
+            observer.model_changed(data)

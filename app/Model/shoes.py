@@ -1,13 +1,9 @@
-""" Модуль раздатчика карт, где хранятся все колоды """
-
 from itertools import chain
 from random import shuffle
-from cards import Deck
+from app.model.cards import Deck
 
 
 class Shoes:
-    """ Класс раздатчика карт, где хранятся все колоды """
-
     def __init__(self, decks, shfl=True):
         self.stock = list(
             chain(*[Deck(number).cards for number in range(decks)]))
