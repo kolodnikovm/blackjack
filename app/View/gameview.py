@@ -2,11 +2,12 @@ class GameView():
 
     def __init__(self, controller):
         self._controller = controller
-        self._actions = {'h': self._controller.give_cards,
-                         's': self._controller.user_stand,
-                         'e': self._controller.throw_exception}
+        self.actions = {'h': self._controller.give_cards,
+                        's': self._controller.user_stand,
+                        'e': self._controller.throw_exception}
 
     def model_changed(self, data):
+        print('\nSTATS\n')
         print("My score: {user_score}".format(user_score=data['user'].score),
               end='\n' + '-' * 40 + '\n')
         print("My cards:{user_cards}".format(user_cards=data['user'].hand),
@@ -21,27 +22,32 @@ class GameView():
         """
         print(message)
 
-    def set_bet(self):
-        user_bet = input('Set your bet: ')
-        self._controller.set_bet(user_bet)
-
-    def show_start_game_state(self):
+    def show_start_game_state(self, data):
         start_state = """
         My score: {user_score}
         My cards: {user_cards}
-        """.format(user_score=self._controller._model._user.score, user_cards=self._controller._model._user.hand)
+        """.format(user_score=data['user'].score, user_cards=data['user'].hand)
         print(start_state)
 
-    def game_cycle(self):
-        self.show_start_game_message()
-        self.set_bet()
-        self.show_start_game_state()
+    def show_endgame_stats(self, data):
+        stats = """
+        User score: {user_score}
+        User cards: {user_cards}
+        ---------------------
+        Computer score: {computer_score}
+        Computer cards: {computer_cards}
+        """.format(
+            user_score=data['user'].score,
+            user_cards=data['user'].hand,
+            computer_score=data['computer'].score,
+            computer_cards=data['computer'].hand
+        )
+        print(stats)
 
-        while not self._controller._model._game_over:
-            action = input('Hit or Stand [h]/[s] - ')
-            try:
-                self._actions[action]()
-            except KeyError:
-                print('Invalid input')
+    def set_bet(self):
+        user_bet = input('Set your bet: ')
+        return user_bet
 
-        self.show_stats()
+    def request_action(self):
+        action = input('Hit or Stand [h]/[s] - ')
+        return action

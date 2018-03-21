@@ -21,9 +21,3 @@ class Shoes:
                 return self.stock.pop()
             return [self.stock.pop() for card_number in range(number)]
         return None
-
-
-if __name__ == '__main__':
-    test_shoe = Shoes(2)
-    print(test_shoe.get_card(), 'Ohne Zahl')
-    print(test_shoe.get_card(3), 'Mit Zahl')

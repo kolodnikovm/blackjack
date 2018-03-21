@@ -1,6 +1,7 @@
-from app.model.player import User, Computer
+from app.database.dababase import DataBase
+from app.model.player import Computer, User
 from app.model.shoes import Shoes
-from app.utilities.supfuncs import define_winner
+from app.utilities.functions import define_winner
 
 
 class GameModel:
@@ -12,6 +13,7 @@ class GameModel:
         self._game_over = False
         self._new_game = True
         self._observers = []
+        self.database = DataBase()
 
     @property
     def user(self):
@@ -36,7 +38,6 @@ class GameModel:
             self._user.score, self._computer.score, stand=self._user.stand)
         if self._game_over:
             self._user.winner, self._computer.winner = list(winners.values())
-            print(list(winners.values()))
         return not self._game_over
 
     def _give_card_to_user(self):
@@ -60,6 +61,19 @@ class GameModel:
         self._user.no_more_cards()
         while self._computer.score <= 17:
             self._give_card_to_comp()
+        self.notify()
+
+    def save_history(self):
+        data = {
+            'user cards': self.user.hand,
+            'computer cards': self.computer.hand,
+            'user win': self.user.winner,
+            'computer win': self.computer.winner,
+        }
+        self.database.save_data(data)
+
+    def set_bet(self, bet):
+        self._user.bet = bet
         self.notify()
 
     def add_observer(self, observer):

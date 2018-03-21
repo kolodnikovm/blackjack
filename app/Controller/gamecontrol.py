@@ -20,15 +20,36 @@ class GameController:
     def throw_exception(self):
         raise Exception
 
+    def post_game_actions(self):
+        self._model.save_history()
+
     def check_winner(self):
         self._model.check_winner()
 
     def set_bet(self, bet):
-        self._model.user.bet = bet
+        self._model.set_bet(bet)
+
+    def get_model_data(self):
+        return {'user': self._model.user, 'computer': self._model.computer}
 
     def retrieve_model_data(self):
         data = {'user': self._model.user, 'computer': self._model.computer}
         self.notify(data)
+
+    # TODO Вынести работу с _view
+    def game_cycle(self):
+        self._view.show_start_game_message()
+        self.set_bet(self._view.set_bet())
+
+        while self._model.check_winner():
+            action = self._view.request_action()
+            try:
+                self._view.actions[action]()
+            except KeyError:
+                print('Invalid input')
+
+        self._view.show_endgame_stats(self.get_model_data())
+        self.post_game_actions()
 
     def model_changed(self):
         self.retrieve_model_data()
