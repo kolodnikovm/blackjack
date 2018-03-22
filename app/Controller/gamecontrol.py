@@ -22,6 +22,7 @@ class GameController:
 
     def post_game_actions(self):
         self._model.save_history()
+        self._model.database.close_databse()
 
     def check_winner(self):
         self._model.check_winner()
@@ -29,17 +30,36 @@ class GameController:
     def set_bet(self, bet):
         self._model.set_bet(bet)
 
-    def get_model_data(self):
-        return {'user': self._model.user, 'computer': self._model.computer}
+    def add_bet(self, bet):
+        self._model.add_bet(bet)
+        data = self.get_model_data()
+        self.notify(data)
 
-    def retrieve_model_data(self):
+    def get_db_data(self):
+        db_data = self._model.get_history()[1:]
+        return db_data
+
+    def count_totals(self):
+        data = self.get_db_data()
+        totals = {'user_total': 0, 'computer_total': 0}
+        for d in data:
+            totals['user_total'] += int(d['user win'])
+            totals['computer_total'] += int(d['computer win'])
+        return totals
+
+    def get_model_data(self):
         data = {'user': self._model.user, 'computer': self._model.computer}
+        return data
+
+    def send_model_data(self):
+        data = self.get_model_data()
         self.notify(data)
 
     # TODO Вынести работу с _view
+    # TODO Работа с actions через _view.actions
     def game_cycle(self):
         self._view.show_start_game_message()
-        self.set_bet(self._view.set_bet())
+        self._view.set_bet()
 
         while self._model.check_winner():
             action = self._view.request_action()
@@ -48,11 +68,12 @@ class GameController:
             except KeyError:
                 print('Invalid input')
 
-        self._view.show_endgame_stats(self.get_model_data())
+        self._view.show_endgame_stats(
+            {**self.get_model_data(), **self.count_totals()})
         self.post_game_actions()
 
     def model_changed(self):
-        self.retrieve_model_data()
+        self.send_model_data()
 
     def add_observer(self, observer):
         self._observers.append(observer)

@@ -7,9 +7,9 @@ from app.model.gamemodel import GameModel
 
 class GameManager:
     def __init__(self, config='develop'):
-        self._game_model = GameModel()
-        self._controller = GameController(self._game_model)
         self._configs = CONFIGS[config]()
+        self._game_model = GameModel(db_filename=self._configs.DATABASE)
+        self._controller = GameController(self._game_model)
 
         # TODO Вынести логгер в отдельный модуль
         logging.basicConfig(level=self._configs.LOG_LEVEL)

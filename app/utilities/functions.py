@@ -2,13 +2,6 @@ import logging
 
 
 def define_winner(user_score, computer_score, stand=False):
-    """ 
-    Функция проверки победителя.
-    Возращает False, если игра должна продолжаться, 
-    True - определен результат, игра должна завершиться. 
-    При этом определяется победитель в свойстве соответствующего игрока.
-    """
-
     if user_score < 21 and computer_score < 21:
         if stand:
             result_winner = {'user': 0, 'computer': 0}
@@ -34,10 +27,3 @@ def define_winner(user_score, computer_score, stand=False):
         logging.debug('User wins')
         result_winner = {'user': 1, 'computer': 0}
         return True, result_winner
-
-
-# def reset_file(data):
-#     """ Очищает файл data """
-#     data.seek(0)
-#     data.truncate()
-#     print('log_data cleared')

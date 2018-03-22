@@ -4,18 +4,16 @@ from app.model.cards import Deck
 
 
 class Shoes:
-    def __init__(self, decks, shfl=True):
+    def __init__(self, decks=1, shfl=True):
         self.stock = list(
             chain(*[Deck(number).cards for number in range(decks)]))
         if shfl:
             self.shuffle_deck()
 
     def shuffle_deck(self):
-        """ Перетасовать карты в stock """
         shuffle(self.stock)
 
     def get_card(self, number=1):
-        """ Возращает карту из stock """
         if self.stock:
             if number == 1:
                 return self.stock.pop()

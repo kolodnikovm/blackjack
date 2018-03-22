@@ -4,7 +4,8 @@ class GameView():
         self._controller = controller
         self.actions = {'h': self._controller.give_cards,
                         's': self._controller.user_stand,
-                        'e': self._controller.throw_exception}
+                        'e': self._controller.throw_exception,
+                        'a': self.add_bet}
 
     def model_changed(self, data):
         print('\nSTATS\n')
@@ -19,6 +20,7 @@ class GameView():
         Controls:
             h - get a card
             s - no cards
+            a - add bet
         """
         print(message)
 
@@ -36,17 +38,26 @@ class GameView():
         ---------------------
         Computer score: {computer_score}
         Computer cards: {computer_cards}
+        ---------------------
+        Total score: User: {user_total} || Computer: {computer_total}
         """.format(
             user_score=data['user'].score,
             user_cards=data['user'].hand,
             computer_score=data['computer'].score,
-            computer_cards=data['computer'].hand
+            computer_cards=data['computer'].hand,
+            user_total=data['user_total'],
+            computer_total=data['computer_total']
         )
+
         print(stats)
 
     def set_bet(self):
         user_bet = input('Set your bet: ')
-        return user_bet
+        self._controller.set_bet(user_bet)
+
+    def add_bet(self):
+        bet_to_add = input('Bet to add: ')
+        self._controller.add_bet(bet_to_add)
 
     def request_action(self):
         action = input('Hit or Stand [h]/[s] - ')
