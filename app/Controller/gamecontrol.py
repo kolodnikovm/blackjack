@@ -11,29 +11,26 @@ class GameController:
         self._model.add_observer(self)
         self.add_observer(self._view)
 
-    def give_cards(self):
+# View actions handlers
+    def give_cards(self, *args, **kwargs):
         self._model.hit_all()
 
-    def user_stand(self):
+    def user_stand(self, *args, **kwargs):
         self._model.computer_fill()
 
-    def throw_exception(self):
+    def throw_exception(self, *args, **kwargs):
         raise Exception
-
-    def post_game_actions(self):
-        self._model.save_history()
-        self._model.database.close_databse()
-
-    def check_winner(self):
-        self._model.check_winner()
 
     def set_bet(self, bet):
         self._model.set_bet(bet)
 
-    def add_bet(self, bet):
-        self._model.add_bet(bet)
+    def add_bet(self, *args, **kwargs):
+        self._model.add_bet(kwargs['bet'])
         data = self.get_model_data()
         self.notify(data)
+
+    def check_winner(self):
+        self._model.check_winner()
 
     def get_db_data(self):
         db_data = self._model.get_history()[1:]
@@ -41,10 +38,11 @@ class GameController:
 
     def count_totals(self):
         data = self.get_db_data()
-        totals = {'user_total': 0, 'computer_total': 0}
-        for d in data:
-            totals['user_total'] += int(d['user win'])
-            totals['computer_total'] += int(d['computer win'])
+        totals = {'user_total': self._model.user.winner,
+                  'computer_total': self._model.computer.winner}
+        for row in data:
+            totals['user_total'] += int(row['user win'])
+            totals['computer_total'] += int(row['computer win'])
         return totals
 
     def get_model_data(self):
@@ -55,18 +53,23 @@ class GameController:
         data = self.get_model_data()
         self.notify(data)
 
-    # TODO Вынести работу с _view
-    # TODO Работа с actions через _view.actions
-    def game_cycle(self):
-        self._view.show_start_game_message()
-        self._view.set_bet()
+    def post_game_actions(self):
+        self._model.save_history()
 
-        while self._model.check_winner():
+    # TODO Вынести работу с _view
+    def game_cycle(self):
+        self._view.show_start_game_message(new=self._model.new_game)
+        if self._model.new_game:
+            self._view.set_bet()
+        else:
+            self._view.show_start_game_state(self.get_model_data())
+
+        while not self._model.stop_game():
             action = self._view.request_action()
             try:
-                self._view.actions[action]()
+                self._view.actions[action](self.get_model_data())
             except KeyError:
-                print('Invalid input')
+                self._view.show_error_input()
 
         self._view.show_endgame_stats(
             {**self.get_model_data(), **self.count_totals()})

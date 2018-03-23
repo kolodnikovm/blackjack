@@ -5,7 +5,7 @@ class GameView():
         self.actions = {'h': self._controller.give_cards,
                         's': self._controller.user_stand,
                         'e': self._controller.throw_exception,
-                        'a': self.add_bet}
+                        'a': self._controller.add_bet}
 
     def model_changed(self, data):
         print('\nSTATS\n')
@@ -14,14 +14,21 @@ class GameView():
         print("My cards:{user_cards}".format(user_cards=data['user'].hand),
               end='\n' + '-' * 40 + '\n')
 
-    def show_start_game_message(self):
+    def show_error_input(self):
+        print('Invalid input')
+
+    def show_start_game_message(self, new=True):
+        is_new = "New"
+        if not new:
+            is_new = 'Last'
+
         message = """
-        New game started
+        %s game started
         Controls:
             h - get a card
             s - no cards
             a - add bet
-        """
+        """ % is_new
         print(message)
 
     def show_start_game_state(self, data):
@@ -29,6 +36,7 @@ class GameView():
         My score: {user_score}
         My cards: {user_cards}
         """.format(user_score=data['user'].score, user_cards=data['user'].hand)
+
         print(start_state)
 
     def show_endgame_stats(self, data):
@@ -57,7 +65,7 @@ class GameView():
 
     def add_bet(self):
         bet_to_add = input('Bet to add: ')
-        self._controller.add_bet(bet_to_add)
+        return bet_to_add
 
     def request_action(self):
         action = input('Hit or Stand [h]/[s] - ')
