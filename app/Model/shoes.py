@@ -1,5 +1,6 @@
 from itertools import chain
 from random import shuffle
+
 from app.model.cards import Deck
 
 

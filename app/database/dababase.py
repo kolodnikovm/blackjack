@@ -1,13 +1,15 @@
 import csv
 import logging
+import pickle
 from os import stat
 
 
 class DataBase:
-    def __init__(self, db_filename='app/assets/db_dev.csv', *args, **kwargs):
+    def __init__(self, fieldnames, db_filename='app/assets/db_dev.csv', bckp_filename='app/assets/data', *args, **kwargs):
+        self._db_filename = db_filename
+        self._bckp_filename = bckp_filename
         self._db_file = open(db_filename, 'a+', newline='')
-        self.__FIELDNAMES = ['user cards',
-                             'computer cards', 'user win', 'computer win']
+        self.__FIELDNAMES = fieldnames
         self._csv_writer = csv.DictWriter(
             self._db_file, fieldnames=self.__FIELDNAMES)
         self._csv_reader = csv.DictReader(
@@ -17,29 +19,26 @@ class DataBase:
             logging.debug('No data found. Creating new...')
             self._csv_writer.writeheader()
 
-    def save_data(self, data):
-        self._csv_writer.writerow(data)
+    def save_data(self, data, backup=False):
+        if backup:
+            with open(self._bckp_filename, 'wb') as bckp:
+                pickle.dump(data, bckp)
+        else:
+            self._csv_writer.writerow(data)
 
-    def load_data(self):
-        self._db_file.seek(0)
-        db_data = list(self._csv_reader)
-        return db_data
+    def load_data(self, restore=False):
+        if restore:
+            with open(self._bckp_filename, 'rb') as bckp:
+                return pickle.load(bckp)
+        else:
+            self._db_file.seek(0)
+            db_data = list(self._csv_reader)
+            return db_data
 
-    def save_backup(self):
-        pass
+    def reset_file(self, file=None):
+        if file is None:
+            file = self._bckp_filename
+        open(file, 'w').close()
 
-    def load_backup(self):
-        pass
-
-    def close_databse(self):
+    def close_database(self):
         self._db_file.close()
-
-
-if __name__ == '__main__':
-    from functools import reduce
-    db = DataBase()
-    totals = 0
-    data = db.load_data()[1:5]
-    for d in data:
-        totals += (d['user win'])
-    print(totals)

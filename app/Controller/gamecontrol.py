@@ -20,10 +20,6 @@ class GameController:
     def throw_exception(self):
         raise Exception
 
-    def post_game_actions(self):
-        self._model.save_history()
-        self._model.database.close_databse()
-
     def check_winner(self):
         self._model.check_winner()
 
@@ -41,10 +37,11 @@ class GameController:
 
     def count_totals(self):
         data = self.get_db_data()
-        totals = {'user_total': 0, 'computer_total': 0}
-        for d in data:
-            totals['user_total'] += int(d['user win'])
-            totals['computer_total'] += int(d['computer win'])
+        totals = {'user_total': self._model.user.winner,
+                  'computer_total': self._model.computer.winner}
+        for row in data:
+            totals['user_total'] += int(row['user win'])
+            totals['computer_total'] += int(row['computer win'])
         return totals
 
     def get_model_data(self):
@@ -55,18 +52,20 @@ class GameController:
         data = self.get_model_data()
         self.notify(data)
 
+    def post_game_actions(self):
+        self._model.save_history()
+
     # TODO Вынести работу с _view
-    # TODO Работа с actions через _view.actions
     def game_cycle(self):
-        self._view.show_start_game_message()
+        self._view.show_start_game_message(new=self._model.new_game)
         self._view.set_bet()
 
-        while self._model.check_winner():
+        while not self._model.stop_game():
             action = self._view.request_action()
             try:
                 self._view.actions[action]()
             except KeyError:
-                print('Invalid input')
+                self._view.show_error_input()
 
         self._view.show_endgame_stats(
             {**self.get_model_data(), **self.count_totals()})

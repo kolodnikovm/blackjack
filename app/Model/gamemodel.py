@@ -1,20 +1,42 @@
+import logging
+
 from app.database.dababase import DataBase
 from app.model.player import Computer, User
 from app.model.shoes import Shoes
 from app.utilities.functions import define_winner
-import collections
 
 
 class GameModel:
     def __init__(self, db_filename=None):
         self._win_checker = define_winner
-        self._shoes = Shoes()
-        self._user = User(self.shoes.get_card(2))
-        self._computer = Computer(self.shoes.get_card())
+        self.__FIELDS = ['user cards',
+                         'computer cards', 'user win', 'computer win']
+        self.database = DataBase(
+            db_filename=db_filename, fieldnames=self.__FIELDS)
+        try:
+            restored_data = self.database.load_data(restore=True)
+            self._shoes = restored_data['shoes']
+            self._user = restored_data['user']
+            self._computer = restored_data['computer']
+            self._new_game = False
+            self.database.reset_file()
+        except Exception as e:
+            logging.warning(
+                'Error occured while retrieving backup data\n => %s', e)
+            self._shoes = Shoes()
+            self._user = User(self.shoes.get_card(2))
+            self._computer = Computer(self.shoes.get_card())
+            self._new_game = True
         self._game_over = False
-        self._new_game = True
         self._observers = []
-        self.database = DataBase(db_filename)
+
+    @property
+    def game_over(self):
+        return self._game_over
+
+    @property
+    def new_game(self):
+        return self._new_game
 
     @property
     def user(self):
@@ -28,12 +50,17 @@ class GameModel:
     def shoes(self):
         return self._shoes
 
-    def check_winner(self):
-        self._game_over, winners = self._win_checker(
-            self._user.score, self._computer.score, stand=self._user.stand)
-        if self._game_over:
-            self._user.winner, self._computer.winner = list(winners.values())
-        return not self._game_over
+    @game_over.setter
+    def game_over(self, value):
+        self._game_over = value
+
+    def stop_game(self):
+        self.game_over, winners = self._win_checker(
+            self.user.score, self._computer.score, stand=self._user.stand)
+        logging.info('game_over - %s, winners - %s', self.game_over, winners)
+        if self.game_over:
+            self.user.winner, self.computer.winner = list(winners.values())
+        return self.game_over
 
     def _give_card_to_user(self):
         self._user.hit_me(self._shoes.get_card())
@@ -64,6 +91,17 @@ class GameModel:
     def get_history(self):
         data = self.database.load_data()
         return data
+
+    def backup_data(self):
+        data = {
+            'user': self.user,
+            'computer': self.computer,
+            'shoes': self.shoes
+        }
+        self.database.save_data(data, backup=True)
+
+    def close_db(self):
+        self.database.close_database()
 
     def set_bet(self, bet):
         self.user.bet = bet
