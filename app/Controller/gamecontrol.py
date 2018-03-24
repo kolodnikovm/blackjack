@@ -21,13 +21,13 @@ class GameController:
     def throw_exception(self, *args, **kwargs):
         raise Exception
 
-    def set_bet(self, bet):
+    def set_bet(self):
+        bet = self._view.set_bet()
         self._model.set_bet(bet)
 
     def add_bet(self, *args, **kwargs):
-        self._model.add_bet(kwargs['bet'])
-        data = self.get_model_data()
-        self.notify(data)
+        bet_to_add = self._view.add_bet()
+        self._model.add_bet(bet_to_add)
 
     def check_winner(self):
         self._model.check_winner()

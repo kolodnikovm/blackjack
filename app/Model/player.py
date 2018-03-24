@@ -4,7 +4,7 @@ class Player:
         self.score = 0
         if init_cards:
             self.score = sum([card.score for card in init_cards])
-        self._winner = False
+        self._winner = 0
         self._bet = 0
 
     def hit_me(self, card):
@@ -24,7 +24,8 @@ class Player:
 
     @bet.setter
     def bet(self, value):
-        self._bet = value
+        if isinstance(value, int):
+            self._bet = value
 
     @winner.setter
     def winner(self, value):
@@ -43,4 +44,3 @@ class User(Player):
 class Computer(Player):
     def __init__(self, init_cards):
         super().__init__([init_cards])
-

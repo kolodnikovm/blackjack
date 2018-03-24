@@ -2,6 +2,7 @@ class GameView():
 
     def __init__(self, controller):
         self._controller = controller
+        # TODO заменить на Mediator pattern??
         self.actions = {'h': self._controller.give_cards,
                         's': self._controller.user_stand,
                         'e': self._controller.throw_exception,
@@ -18,17 +19,18 @@ class GameView():
         print('Invalid input')
 
     def show_start_game_message(self, new=True):
-        is_new = "New"
+        game_state = "New"
         if not new:
-            is_new = 'Last'
+            game_state = 'Last'
 
         message = """
-        %s game started
+        {game_state} game started
+
         Controls:
             h - get a card
             s - no cards
             a - add bet
-        """ % is_new
+        """.format(game_state=game_state)
         print(message)
 
     def show_start_game_state(self, data):
@@ -61,7 +63,7 @@ class GameView():
 
     def set_bet(self):
         user_bet = input('Set your bet: ')
-        self._controller.set_bet(user_bet)
+        return user_bet
 
     def add_bet(self):
         bet_to_add = input('Bet to add: ')
