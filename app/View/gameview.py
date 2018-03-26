@@ -2,7 +2,6 @@ class GameView():
 
     def __init__(self, controller):
         self._controller = controller
-        # TODO заменить на Mediator pattern??
         self.actions = {'h': self._controller.give_cards,
                         's': self._controller.user_stand,
                         'e': self._controller.throw_exception,
