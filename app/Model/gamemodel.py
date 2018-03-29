@@ -3,7 +3,7 @@ import logging
 from app.database.dababase import DataBase
 from app.model.player import Computer, User
 from app.model.shoes import Shoes
-from app.utilities.functions import define_winner
+from app.utilities.functions import define_winner, logger
 
 
 class GameModel:
@@ -67,11 +67,13 @@ class GameModel:
     def _give_card_to_comp(self):
         self._computer.hit_me(self._shoes.get_card())
 
+    @logger
     def hit_all(self):
         self._give_card_to_comp()
         self._give_card_to_user()
         self.notify()
 
+    @logger
     def computer_fill(self):
         self._user.no_more_cards()
         while self._computer.score <= 17:
@@ -102,10 +104,12 @@ class GameModel:
     def close_db(self):
         self.database.close_database()
 
+    @logger
     def set_bet(self, bet):
         self.user.bet = int(bet)
         self.notify()
 
+    @logger
     def add_bet(self, bet):
         self.user.bet += int(bet)
         self.notify()

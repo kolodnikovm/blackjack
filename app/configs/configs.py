@@ -10,6 +10,7 @@ class BaseConfig:
 class DevConfig(BaseConfig):
     def __init__(self, *args, **kwargs):
         self.LOG_LEVEL = logging.DEBUG
+        self.LOG_FORMAT = '%(asctime)s - %(levelname)s - %(message)s'
         self.LOG_FILENAME = 'app/assets/actions.log'
         self.LOG_CONFIGS = {
             'level': 10,

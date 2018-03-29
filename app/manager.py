@@ -9,7 +9,8 @@ class GameManager:
     def __init__(self, config='develop'):
         self._configs = CONFIGS[config]()
         logging.basicConfig(filename=self._configs.LOG_FILENAME,
-                            level=self._configs.LOG_LEVEL)
+                            level=self._configs.LOG_LEVEL,
+                            format=self._configs.LOG_FORMAT)
         self._game_model = GameModel(db_filename=self._configs.DATABASE)
         self._controller = GameController(self._game_model)
 

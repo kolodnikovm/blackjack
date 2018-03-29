@@ -30,8 +30,8 @@ def define_winner(user_score, computer_score, stand=False):
 
 
 def logger(f):
-    def wrapper(*args, **kwargs):
-        logging.debug('Decorated %s' % f.__name__)
-        f(*args, **kwargs)
+    def wrapper(self, *args, **kwargs):
+        logging.debug('Action: {action_name} || args: {args} kwargs: {kwargs}'
+                      .format(action_name=f.__name__, args=args, kwargs=kwargs))
+        f(self, *args, **kwargs)
     return wrapper
-

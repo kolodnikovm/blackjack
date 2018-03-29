@@ -65,5 +65,5 @@ class GameView():
         return bet_to_add
 
     def request_action(self):
-        action = input('Hit or Stand [h]/[s] - ')
+        action = input('Hit or Stand [h]/[s] || [a]dd bet - ')
         return action
