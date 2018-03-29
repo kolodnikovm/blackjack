@@ -12,22 +12,32 @@ class GameController:
         self.add_observer(self._view)
 
 # View actions handlers
-    def give_cards(self, *args, **kwargs):
+    def give_cards(self):
         self._model.hit_all()
 
-    def user_stand(self, *args, **kwargs):
+    def user_stand(self):
         self._model.computer_fill()
 
-    def throw_exception(self, *args, **kwargs):
+    def throw_exception(self):
         raise Exception
 
     def set_bet(self):
-        bet = self._view.set_bet()
-        self._model.set_bet(bet)
+        while True:
+            try:
+                bet = int(self._view.set_bet())
+                self._model.set_bet(bet)
+                break
+            except ValueError:
+                self._view.show_error_input()
 
-    def add_bet(self, *args, **kwargs):
-        bet_to_add = self._view.add_bet()
-        self._model.add_bet(bet_to_add)
+    def add_bet(self):
+        while True:
+            try:
+                bet_to_add = self._view.add_bet()
+                self._model.add_bet(bet_to_add)
+                break
+            except ValueError:
+                self._view.show_error_input()
 
     def check_winner(self):
         self._model.check_winner()
@@ -56,18 +66,17 @@ class GameController:
     def post_game_actions(self):
         self._model.save_history()
 
-    # TODO Вынести работу с _view
     def game_cycle(self):
         self._view.show_start_game_message(new=self._model.new_game)
         if self._model.new_game:
-            self._view.set_bet()
+            self.set_bet()
         else:
-            self._view.show_start_game_state(self.get_model_data())
+            self._view.show_current_state(self.get_model_data())
 
         while not self._model.stop_game():
             action = self._view.request_action()
             try:
-                self._view.actions[action](self.get_model_data())
+                self._view.actions[action]()
             except KeyError:
                 self._view.show_error_input()
 

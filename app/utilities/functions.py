@@ -27,3 +27,11 @@ def define_winner(user_score, computer_score, stand=False):
         logging.debug('User wins')
         result_winner = {'user': 1, 'computer': 0}
         return True, result_winner
+
+
+def logger(f):
+    def wrapper(*args, **kwargs):
+        logging.debug('Decorated %s' % f.__name__)
+        f(*args, **kwargs)
+    return wrapper
+

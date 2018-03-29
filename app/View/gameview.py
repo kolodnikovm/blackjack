@@ -8,10 +8,14 @@ class GameView():
                         'a': self._controller.add_bet}
 
     def model_changed(self, data):
+        self.show_current_state(data)
+
+    def show_current_state(self, data):
         print('\nSTATS\n')
-        print("My score: {user_score}".format(user_score=data['user'].score),
+        print('Current bet: {user_bet}'.format(user_bet=data['user'].bet))
+        print('My score: {user_score}'.format(user_score=data['user'].score),
               end='\n' + '-' * 40 + '\n')
-        print("My cards:{user_cards}".format(user_cards=data['user'].hand),
+        print('My cards:{user_cards}'.format(user_cards=data['user'].hand),
               end='\n' + '-' * 40 + '\n')
 
     def show_error_input(self):
@@ -31,14 +35,6 @@ class GameView():
             a - add bet
         """.format(game_state=game_state)
         print(message)
-
-    def show_start_game_state(self, data):
-        start_state = """
-        My score: {user_score}
-        My cards: {user_cards}
-        """.format(user_score=data['user'].score, user_cards=data['user'].hand)
-
-        print(start_state)
 
     def show_endgame_stats(self, data):
         stats = """

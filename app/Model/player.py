@@ -26,6 +26,8 @@ class Player:
     def bet(self, value):
         if isinstance(value, int):
             self._bet = value
+        else:
+            raise TypeError
 
     @winner.setter
     def winner(self, value):

@@ -7,12 +7,12 @@ from app.utilities.functions import define_winner
 
 
 class GameModel:
+    _DBFIELDS = ['user cards', 'computer cards', 'user win', 'computer win']
+
     def __init__(self, db_filename=None):
         self._win_checker = define_winner
-        self.__FIELDS = ['user cards',
-                         'computer cards', 'user win', 'computer win']
         self.database = DataBase(
-            db_filename=db_filename, fieldnames=self.__FIELDS)
+            db_filename=db_filename, fieldnames=GameModel._DBFIELDS)
         try:
             restored_data = self.database.load_data(restore=True)
             self._shoes = restored_data['shoes']
@@ -103,11 +103,11 @@ class GameModel:
         self.database.close_database()
 
     def set_bet(self, bet):
-        self.user.bet = bet
+        self.user.bet = int(bet)
         self.notify()
 
     def add_bet(self, bet):
-        self.user.bet += bet
+        self.user.bet += int(bet)
         self.notify()
 
     def add_observer(self, observer):
