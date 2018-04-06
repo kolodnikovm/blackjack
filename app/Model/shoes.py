@@ -7,7 +7,7 @@ from app.model.cards import Deck
 class Shoes:
     def __init__(self, decks=1, shfl=True):
         self.stock = list(
-            chain(*[Deck(number).cards for number in range(decks)]))
+            chain.from_iterable([Deck(number).cards for number in range(decks)]))
         if shfl:
             self.shuffle_deck()
 

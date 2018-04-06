@@ -8,6 +8,7 @@ from app.utilities.functions import define_winner, logger
 
 class GameModel:
     _DBFIELDS = ['user cards', 'computer cards', 'user win', 'computer win']
+    _SCORE_BEFORE_FILL = 17
 
     def __init__(self, db_filename=None):
         self._win_checker = define_winner
@@ -76,7 +77,7 @@ class GameModel:
     @logger
     def computer_fill(self):
         self._user.no_more_cards()
-        while self._computer.score <= 17:
+        while self._computer.score <= GameModel._SCORE_BEFORE_FILL:
             self._give_card_to_comp()
         self.notify()
 
